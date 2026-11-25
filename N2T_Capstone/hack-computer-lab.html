@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hack Computer Lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap">
+<style>
+:root{--bg:#2f3d22;--bar:#3b4a2c;--card:#fbf9ec;--ink:#26301b;--mute:#6b7355;--line:#e1ddc2;--acc:#3f5a26;--code:#26301b;--codeink:#cfe3b0;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1a2212;--bar:#222d18;--card:#26301b;--ink:#ecebd6;--mute:#a4ac8c;--line:#3a4729;--acc:#9bc46a;--code:#141a0d}}
+:root[data-theme="dark"]{--bg:#1a2212;--bar:#222d18;--card:#26301b;--ink:#ecebd6;--mute:#a4ac8c;--line:#3a4729;--acc:#9bc46a;--code:#141a0d}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif}
+h1,h2,h3{font-family:"Cormorant Garamond",Georgia,serif;margin:0}
+nav{position:sticky;top:0;z-index:5;background:var(--bar);display:flex;gap:6px;align-items:center;padding:10px 14px;overflow-x:auto;white-space:nowrap}
+nav b{color:#f3f0d8;font-size:13px;letter-spacing:.08em;margin-right:auto}
+nav a{color:#dfe6c8;text-decoration:none;font-size:13px;padding:5px 12px;border-radius:99px}
+.kpill{display:flex;gap:6px;align-items:center;color:#f3f0d8;font-size:12px;background:#ffffff1a;padding:3px 6px 3px 12px;border-radius:99px;margin-left:8px}.kpill input{width:60px;padding:4px 6px;border-radius:7px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit}.kpill button{padding:4px 10px}
+nav a:hover{background:#ffffff22}
+main{max-width:1040px;margin:0 auto;padding:18px 14px 40px}
+section{margin-bottom:34px}
+.hero{color:#f3f0d8;padding:26px 0 10px}.hero h1{font-size:40px;line-height:1.1}.hero p{color:#c9d3b0;max-width:560px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.tag{font-size:11px;letter-spacing:.06em;color:var(--mute);text-transform:uppercase}
+h2{font-size:30px;color:#f3f0d8;margin-bottom:4px}.sub{color:#c9d3b0;margin:0 0 14px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+button,select{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:7px 12px;border-radius:9px;cursor:pointer}
+button.on,button.pri{background:var(--acc);color:#fff;border-color:var(--acc)}
+pre,textarea,.mono{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:12px}
+pre{background:var(--code);color:var(--codeink);padding:12px;border-radius:10px;overflow:auto;max-height:340px;margin:0}
+textarea{width:100%;height:300px;background:var(--code);color:var(--codeink);border:0;border-radius:10px;padding:12px;resize:vertical}
+.two{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.out{max-height:300px;overflow:auto;background:var(--code);border-radius:10px;padding:8px 12px;color:var(--codeink)}
+.out div{display:flex;gap:10px;white-space:pre}.out i{color:#7f9a62;font-style:normal;width:28px;text-align:right}.out s{color:#7f9a62;text-decoration:none;margin-left:auto;padding-left:10px}
+canvas{width:100%;image-rendering:pixelated;border-radius:8px;border:6px solid var(--code);display:block;background:#f4efd3}
+.regs{display:grid;grid-template-columns:1fr 1fr;gap:8px}.regs div{border:1px solid var(--line);border-radius:9px;padding:8px}
+.regs span{display:block;font-size:10px;color:var(--mute);letter-spacing:.05em}.regs b{font-family:"JetBrains Mono",monospace;font-size:15px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+#hold{user-select:none;touch-action:none;-webkit-user-select:none}
+.msg{font-size:12px;color:var(--mute)}
+footer{color:#c9d3b0;border-top:1px solid #ffffff22;padding-top:18px;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));font-size:13px}
+footer h3{font-size:18px;color:#f3f0d8}
+</style>
+</head>
+<body>
+<nav><b>HACK COMPUTER LAB</b><a href="#home">Home</a><a href="#a">Part A</a><a href="#b">Part B</a><a href="#c">Part C</a><a href="#sub">Submission</a><span class="kpill">K = <input id="kin" type="number" min="0" max="228" value="44" aria-label="K value"><button id="kbtn">Set</button></span></nav>
+<main>
+<section id="home" class="hero">
+<h1>The Three Pillars of the Hack Machine</h1>
+<p>Nand to Tetris capstone: build the hardware, write the assembler, then make the computer draw a box.</p>
+<div class="grid" style="margin-top:18px;color:var(--ink)">
+<a class="card" href="#a" style="text-decoration:none;color:inherit"><div class="tag">Part A</div><h3>Hack Computer HDL</h3><p>CPU, Memory and Computer chips, written in HDL.</p></a>
+<a class="card" href="#b" style="text-decoration:none;color:inherit"><div class="tag">Part B</div><h3>Python-style Assembler</h3><p>Paste assembly, get 16-bit machine code and a symbol table.</p></a>
+<a class="card" href="#c" style="text-decoration:none;color:inherit"><div class="tag">Part C</div><h3>Box Program &amp; Emulator</h3><p>Press any key on the white screen and the box appears.</p></a>
+</div>
+</section>
+
+<section id="a">
+<h2>Hack CPU Architecture</h2><p class="sub">HDL for the main chips.</p>
+<div class="card"><div class="tabs" id="hdltabs"></div><pre id="hdl"></pre>
+<div class="row"><button id="cp">Copy HDL</button><button id="dl" class="pri">Download .hdl</button></div></div>
+</section>
+
+<section id="b">
+<h2>Assembler Studio</h2><p class="sub">Two passes: labels first, then variables from RAM[16].</p><p class="msg" id="kinfo" style="color:#c9d3b0"></p>
+<div class="row" style="margin:0 0 10px"><span class="tag" style="color:#c9d3b0">Preset</span><select id="pre"></select><button id="asm" class="pri">Assemble</button><button id="send">Send to emulator</button><button id="dlh">Download .hack</button></div>
+<div class="two">
+<div class="card"><div class="tag">Assembly source (.asm)</div><textarea id="src" spellcheck="false"></textarea></div>
+<div class="card"><div class="tag">Machine code (.hack)</div><div class="out mono" id="out"></div><p class="msg" id="stat"></p></div>
+</div>
+</section>
+
+<section id="c">
+<h2>Hack CPU &amp; Screen Emulator</h2><p class="sub">Pixels come from RAM[16384…24575]. The box lives in screen memory.</p>
+<div class="two">
+<div class="card"><div class="tag">Screen 512 × 256</div><canvas id="scr" width="512" height="256"></canvas>
+<div class="row"><button id="run" class="pri">Pause</button><button id="step">Step</button><button id="rst">Reset</button><button id="hold">PRESS TO DRAW BOX</button></div>
+<div class="row"><span class="msg">Speed</span><input id="spd" type="range" min="100" max="20000" step="100" value="3000"><span class="msg" id="spdv"></span></div>
+<p class="msg">The screen stays white. Press any key (or the button) and the box, your name and roll number appear, then the CPU halts and rendering stops. Press Reset to try again.</p></div>
+<div class="card"><div class="tag">Live CPU registers</div>
+<div class="regs" style="margin:8px 0 14px"><div><span>PC</span><b id="rPC"></b></div><div><span>A</span><b id="rA"></b></div><div><span>D</span><b id="rD"></b></div><div><span>KBD</span><b id="rK"></b></div><div><span>RAM[A]</span><b id="rM"></b></div><div><span>CYCLES</span><b id="rC"></b></div></div>
+<div class="tag">Screen memory monitor</div><pre id="mon" style="max-height:140px;margin-top:6px"></pre></div>
+</div>
+</section>
+
+<section id="sub">
+<footer>
+<div><h3>Hack Computer Lab</h3><p>Nand to Tetris capstone: make the computer draw a box.</p></div>
+<div><h3>Parameters</h3><p class="mono" id="fpar"></p></div>
+<div><h3>Student</h3><p>Piyush Khare<br>K.R. Mangalam University</p></div>
+</footer>
+</section>
+</main>
+
+<script>
+// ---------- HDL ----------
+const HDL={
+"CPU.hdl":`CHIP CPU {
+    IN inM[16], instruction[16], reset;
+    OUT outM[16], writeM, addressM[15], pc[15];
+    PARTS:
+    Not(in=instruction[15], out=isA);
+    Mux16(a=aluOut, b=instruction, sel=isA, out=toA);
+    Or(a=isA, b=instruction[5], out=loadA);
+    ARegister(in=toA, load=loadA, out=A, out[0..14]=addressM);
+    Mux16(a=A, b=inM, sel=instruction[12], out=AM);
+    And(a=instruction[15], b=instruction[4], out=loadD);
+    DRegister(in=aluOut, load=loadD, out=D);
+    ALU(x=D, y=AM, zx=instruction[11], nx=instruction[10],
+        zy=instruction[9], ny=instruction[8], f=instruction[7],
+        no=instruction[6], out=aluOut, out=outM, zr=zr, ng=ng);
+    And(a=instruction[15], b=instruction[3], out=writeM);
+    Or(a=zr, b=ng, out=notPos);
+    Not(in=notPos, out=pos);
+    And(a=instruction[2], b=ng, out=j1);
+    And(a=instruction[1], b=zr, out=j2);
+    And(a=instruction[0], b=pos, out=j3);
+    Or(a=j1, b=j2, out=j12);
+    Or(a=j12, b=j3, out=anyJump);
+    And(a=anyJump, b=instruction[15], out=jump);
+    PC(in=A, load=jump, inc=true, reset=reset, out[0..14]=pc);
+}`,
+"Memory.hdl":`CHIP Memory {
+    IN in[16], load, address[15];
+    OUT out[16];
+    PARTS:
+    DMux4Way(in=load, sel=address[13..14], a=r0, b=r1, c=scr, d=kb);
+    Or(a=r0, b=r1, out=ramLoad);
+    RAM16K(in=in, load=ramLoad, address=address[0..13], out=ramOut);
+    Screen(in=in, load=scr, address=address[0..12], out=scrOut);
+    Keyboard(out=kbdOut);
+    Mux4Way16(a=ramOut, b=ramOut, c=scrOut, d=kbdOut,
+              sel=address[13..14], out=out);
+}`,
+"Computer.hdl":`CHIP Computer {
+    IN reset;
+    PARTS:
+    ROM32K(address=pc, out=instruction);
+    CPU(inM=memOut, instruction=instruction, reset=reset,
+        outM=outM, writeM=writeM, addressM=addressM, pc=pc);
+    Memory(in=outM, load=writeM, address=addressM, out=memOut);
+}`};
+let cur="CPU.hdl";const $=id=>document.getElementById(id);
+function showHdl(){$("hdl").textContent=HDL[cur];$("hdltabs").innerHTML="";
+ for(const k in HDL){const b=document.createElement("button");b.textContent=k;if(k==cur)b.className="on";b.onclick=()=>{cur=k;showHdl()};$("hdltabs").append(b)}}
+showHdl();
+$("cp").onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(HDL[cur]).then(()=>{$("cp").textContent="Copied";setTimeout(()=>$("cp").textContent="Copy HDL",1200)}).catch(()=>{})};
+function save(name,text){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type:"text/plain"}));a.download=name;a.click()}
+$("dl").onclick=()=>save(cur,HDL[cur]);
+
+// ---------- Assembler ----------
+let K=44;
+const TEXT=`// ---- text: each word holds 2 characters (8 pixels each) ----
+// "PIYUSH KHARE" at pixel row 100
+@7951
+D=A
+@19589
+M=D
+@4369
+D=A
+@19590
+M=D
+@4382
+D=A
+@19591
+M=D
+@4352
+D=A
+@19592
+M=D
+@3601
+D=A
+@19593
+M=D
+@7951
+D=A
+@19594
+M=D
+@1041
+D=A
+@19621
+M=D
+@4369
+D=A
+@19622
+M=D
+@4353
+D=A
+@19623
+M=D
+@2304
+D=A
+@19624
+M=D
+@4369
+D=A
+@19625
+M=D
+@273
+D=A
+@19626
+M=D
+@1041
+D=A
+@19653
+M=D
+@4362
+D=A
+@19654
+M=D
+@4353
+D=A
+@19655
+M=D
+@1280
+D=A
+@19656
+M=D
+@4369
+D=A
+@19657
+M=D
+@273
+D=A
+@19658
+M=D
+@1039
+D=A
+@19685
+M=D
+@4356
+D=A
+@19686
+M=D
+@7950
+D=A
+@19687
+M=D
+@768
+D=A
+@19688
+M=D
+@7967
+D=A
+@19689
+M=D
+@3855
+D=A
+@19690
+M=D
+@1025
+D=A
+@19717
+M=D
+@4356
+D=A
+@19718
+M=D
+@4368
+D=A
+@19719
+M=D
+@1280
+D=A
+@19720
+M=D
+@4369
+D=A
+@19721
+M=D
+@261
+D=A
+@19722
+M=D
+@1025
+D=A
+@19749
+M=D
+@4356
+D=A
+@19750
+M=D
+@4368
+D=A
+@19751
+M=D
+@2304
+D=A
+@19752
+M=D
+@4369
+D=A
+@19753
+M=D
+@265
+D=A
+@19754
+M=D
+@7937
+D=A
+@19781
+M=D
+@3588
+D=A
+@19782
+M=D
+@4367
+D=A
+@19783
+M=D
+@4352
+D=A
+@19784
+M=D
+@4369
+D=A
+@19785
+M=D
+@7953
+D=A
+@19786
+M=D
+// "2501730244" at pixel row 116
+@7950
+D=A
+@20101
+M=D
+@1038
+D=A
+@20102
+M=D
+@3871
+D=A
+@20103
+M=D
+@3598
+D=A
+@20104
+M=D
+@2056
+D=A
+@20105
+M=D
+@273
+D=A
+@20133
+M=D
+@1553
+D=A
+@20134
+M=D
+@4112
+D=A
+@20135
+M=D
+@4369
+D=A
+@20136
+M=D
+@3084
+D=A
+@20137
+M=D
+@3856
+D=A
+@20165
+M=D
+@1049
+D=A
+@20166
+M=D
+@4104
+D=A
+@20167
+M=D
+@4121
+D=A
+@20168
+M=D
+@2570
+D=A
+@20169
+M=D
+@4104
+D=A
+@20197
+M=D
+@1045
+D=A
+@20198
+M=D
+@3588
+D=A
+@20199
+M=D
+@2069
+D=A
+@20200
+M=D
+@2313
+D=A
+@20201
+M=D
+@4100
+D=A
+@20229
+M=D
+@1043
+D=A
+@20230
+M=D
+@4098
+D=A
+@20231
+M=D
+@1043
+D=A
+@20232
+M=D
+@7967
+D=A
+@20233
+M=D
+@4354
+D=A
+@20261
+M=D
+@1041
+D=A
+@20262
+M=D
+@4098
+D=A
+@20263
+M=D
+@529
+D=A
+@20264
+M=D
+@2056
+D=A
+@20265
+M=D
+@3615
+D=A
+@20293
+M=D
+@3598
+D=A
+@20294
+M=D
+@3842
+D=A
+@20295
+M=D
+@7950
+D=A
+@20296
+M=D
+@2056
+D=A
+@20297
+M=D
+`;
+function boxAsm(K){const w=K%4+1,a=16384+32*K;
+const extra="A=A+1\nM=-1\n".repeat(w-1);
+return `// Box.asm - Make the Computer Draw a Box
+// Student: Piyush Khare   Roll No.: 2501730244
+// Course: Nand to Tetris - I, K.R. Mangalam University
+// K = ${K}, start row = ${K}, width = 16 * ((${K} mod 4) + 1) = ${16*w} px
+// First address = 16384 + 32 * ${K} = ${a}
+// The screen stays white until a key is pressed. Then the box is
+// drawn, the name and roll number are written, and the CPU halts.
+(WAIT)
+@KBD
+D=M
+@WAIT
+D;JEQ
+@${a}      // 16384 + 32 * ${K}
+D=A
+@addr
+M=D
+@28
+D=A
+@n
+M=D
+(ROW)
+@addr
+A=M
+M=-1
+${extra}@addr
+D=M
+@32
+D=D+A
+@addr
+M=D
+@n
+M=M-1
+D=M
+@ROW
+D;JGT
+${TEXT}(END)
+@END
+0;JMP`}
+const PRE={
+"Box.asm (capstone)":boxAsm(K),
+"Add.asm":`// RAM[2] = 2 + 3
+@2
+D=A
+@3
+D=D+A
+@0
+M=D
+(END)
+@END
+0;JMP`,
+"Max.asm":`// RAM[2] = max(RAM[0], RAM[1])
+@0
+D=M
+@1
+D=D-M
+@FIRST
+D;JGT
+@1
+D=M
+@OUT
+0;JMP
+(FIRST)
+@0
+D=M
+(OUT)
+@2
+M=D
+(END)
+@END
+0;JMP`};
+const C={"0":"101010","1":"111111","-1":"111010","D":"001100","A":"110000","!D":"001101","!A":"110001","-D":"001111","-A":"110011","D+1":"011111","A+1":"110111","D-1":"001110","A-1":"110010","D+A":"000010","D-A":"010011","A-D":"000111","D&A":"000000","D|A":"010101"};
+const J={"":"000","JGT":"001","JEQ":"010","JGE":"011","JLT":"100","JNE":"101","JLE":"110","JMP":"111"};
+function comp(c){if(C[c])return"0"+C[c];const m=c.replace(/M/g,"A");if(c.includes("M")&&C[m])return"1"+C[m];return null}
+function assemble(text){
+ const sym={SP:0,LCL:1,ARG:2,THIS:3,THAT:4,SCREEN:16384,KBD:24576};for(let i=0;i<16;i++)sym["R"+i]=i;
+ const lines=[],errs=[];let n=0;
+ text.split("\n").forEach((raw,i)=>{const s=raw.replace(/\/\/.*/,"").replace(/\s+/g,"");if(!s)return;
+  if(s[0]=="("){sym[s.slice(1,-1)]=n}else{lines.push({s,i:i+1,raw:raw.replace(/\/\/.*/,"").trim()});n++}});
+ let next=16;const out=[];
+ for(const l of lines){let b;const s=l.s;
+  if(s[0]=="@"){let v=s.slice(1);if(/^\d+$/.test(v))v=+v;else{if(!(v in sym))sym[v]=next++;v=sym[v]}
+   if(v>32767){errs.push("Line "+l.i+": address too large");v=0}b=v.toString(2).padStart(16,"0")}
+  else{let d="",c=s,j="";if(c.includes("="))[d,c]=c.split("=");if(c.includes(";"))[c,j]=c.split(";");
+   const cc=comp(c);if(cc===null||!(j in J)||/[^ADM]/.test(d)){errs.push("Line "+l.i+": bad instruction "+s);b="1110000000000000"}
+   else b="111"+cc+(d.includes("A")?1:0)+(d.includes("D")?1:0)+(d.includes("M")?1:0)+J[j]}
+  out.push({b,src:l.raw,v:parseInt(b,2)})}
+ return{out,errs,sym}}
+let prog=[];
+function doAsm(){const r=assemble($("src").value);prog=r.out;
+ $("out").innerHTML=r.out.map((o,i)=>`<div><i>${i}</i>${o.b}<s>${o.src.replace(/</g,"&lt;")}</s></div>`).join("");
+ const vars=Object.keys(r.sym).filter(k=>r.sym[k]>=16&&!/^(SCREEN|KBD)$/.test(k)).length;
+ $("stat").textContent=r.errs.length?r.errs.join(" | "):`${r.out.length} instructions assembled, no errors.`;return r}
+for(const k in PRE){const o=document.createElement("option");o.textContent=k;$("pre").append(o)}
+$("pre").onchange=()=>{$("src").value=PRE[$("pre").value];doAsm()};
+$("asm").onclick=doAsm;
+$("dlh").onclick=()=>{doAsm();save("program.hack",prog.map(o=>o.b).join("\n"))};
+$("send").onclick=()=>{const r=doAsm();if(!r.errs.length){load(prog.map(o=>o.v));$("c").scrollIntoView()}};
+$("src").value=PRE["Box.asm (capstone)"];
+
+// ---------- Emulator ----------
+const ram=new Int16Array(24577);let rom=[],A=0,D=0,PC=0,cyc=0,dirty=true,running=true,halted=false,looping=true;
+function alu(x,y,c){if(c&32)x=0;if(c&16)x=~x;if(c&8)y=0;if(c&4)y=~y;let o=(c&2)?x+y:x&y;if(c&1)o=~o;return o<<16>>16}
+function halt(){halted=true;running=false;$("run").textContent="Halted";$("run").disabled=true}
+function step(){const i=rom[PC];if(i===undefined){PC=0;return}
+ if(!(i&0x8000)){A=i;PC++;cyc++;return}
+ const oa=A&32767,y=(i&0x1000)?ram[oa]:A,o=alu(D,y,(i>>6)&63);
+ const jmp=((i&4)&&o<0)||((i&2)&&o===0)||((i&1)&&o>0);
+ if(i&8){ram[oa]=o;if(oa>=16384&&oa<24576)dirty=true}
+ if(i&16)D=o;if(i&32)A=o;if(jmp&&(i&7)===7&&oa===PC-1)halt();PC=jmp?oa:PC+1;cyc++}
+function load(p){rom=p;reset()}
+function reset(){ram.fill(0);A=D=PC=cyc=0;dirty=true;halted=false;running=true;$("run").textContent="Pause";$("run").disabled=false;draw();regs();if(!looping){looping=true;requestAnimationFrame(frame)}}
+const cv=$("scr"),cx=cv.getContext("2d"),img=cx.createImageData(512,256);
+function draw(){const d=img.data;let p=0;
+ for(let w=0;w<8192;w++){const v=ram[16384+w];for(let b=0;b<16;b++){const on=(v>>b)&1;d[p]=on?47:244;d[p+1]=on?61:239;d[p+2]=on?34:211;d[p+3]=255;p+=4}}
+ cx.putImageData(img,0,0);dirty=false}
+function hex(v){return(v&0xffff).toString(16).toUpperCase().padStart(4,"0")}
+function regs(){$("rPC").textContent=PC;$("rA").textContent=A;$("rD").textContent=D;$("rK").textContent=ram[24576];
+ $("rM").textContent=ram[A&32767]||0;$("rC").textContent=cyc;
+ let m="";for(let r=0;r<4;r++){const a=16384+32*(K+r);m+=`RAM[${a}] (row ${K+r}) = ${ram[a]}\n`}$("mon").textContent=m}
+function frame(){if(running){const n=+$("spd").value;for(let k=0;k<n;k++)step()}
+ if(dirty)draw();regs();if(halted){looping=false;return}requestAnimationFrame(frame)}
+$("spd").oninput=()=>$("spdv").textContent=$("spd").value+"/frame";$("spdv").textContent="3000/frame";
+$("run").onclick=()=>{running=!running;$("run").textContent=running?"Pause":"Run"};
+$("step").onclick=()=>{running=false;$("run").textContent="Run";step()};
+$("rst").onclick=reset;
+const hold=$("hold");function release(){setTimeout(()=>ram[24576]=0,80)}
+hold.addEventListener("pointerdown",e=>{e.preventDefault();ram[24576]=65});
+["pointerup","pointerleave","pointercancel"].forEach(t=>hold.addEventListener(t,release));
+addEventListener("keydown",e=>{if(/TEXTAREA|SELECT|INPUT/.test(e.target.tagName))return;ram[24576]=e.keyCode||65});
+addEventListener("keyup",release);
+function kUI(){const w=K%4+1;$("kin").value=K;
+$("kinfo").textContent=`K = ${K}: start row ${K}, width 16 × ((${K} mod 4) + 1) = ${16*w} px (${w} word${w>1?"s":""}), first address ${16384+32*K}, rows ${K}–${K+27}`;
+$("fpar").innerHTML=`Roll: 2501730244<br>K = ${K}<br>Box start row: ${K}<br>Box width: ${16*w} px<br>Screen address: ${16384+32*K}`}
+function applyK(){const v=$("kin").value.trim(),n=Number(v);
+if(!/^\d+$/.test(v)||n>228){$("kinfo").textContent="K must be a whole number from 0 to 228 so the box fits on the 256-row screen.";return}
+K=n;const k="Box.asm (capstone)";PRE[k]=boxAsm(K);$("pre").selectedIndex=0;$("src").value=PRE[k];doAsm();load(prog.map(o=>o.v));kUI()}
+$("kbtn").onclick=applyK;$("kin").addEventListener("keydown",e=>{if(e.key==="Enter")applyK()});
+kUI();
+doAsm();load(prog.map(o=>o.v));frame();
+</script>
+</body>
+</html>
